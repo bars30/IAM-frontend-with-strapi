@@ -11,11 +11,12 @@ function getCurrentLang() {
 }
 
 // Fetch bot replies from Strapi
+// Fetch bot replies from Strapi
 async function loadBotReplies() {
   try {
-    const res = await fetch("http://localhost:1337/api/bot-replies?populate=*");
+    const res = await fetch("http://localhost:1337/api/bot-replies?populate=team_member.img");
     const json = await res.json();
-console.log(json);
+    console.log(json);
 
     if (!json?.data) return;
 
@@ -23,14 +24,31 @@ console.log(json);
       const titleEn = item.title_en;
       const titleDe = item.title_de;
 
-      // US content → HTML
+      // Եթե սովորական բովանդակություն ունի
       if (titleEn && item.content_us) {
         botReplies.en[titleEn] = convertBlocksToHtml(item.content_us, item.image);
       }
-
-      // DE content → HTML
       if (titleDe && item.content_de) {
         botReplies.de[titleDe] = convertBlocksToHtml(item.content_de, item.image);
+      }
+
+      // Եթե չունի content_us/content_de, բայց ունի team_member
+      if (item.team_member?.length) {
+        let enHtml = "";
+        let deHtml = "";
+
+        item.team_member.forEach(member => {
+          // Վերցնենք member.img-ը որպես image
+          if (member.content_en) {
+            enHtml += convertBlocksToHtml(member.content_en, member.img);
+          }
+          if (member.content_de) {
+            deHtml += convertBlocksToHtml(member.content_de, member.img);
+          }
+        });
+
+        if (titleEn) botReplies.en[titleEn] = enHtml;
+        if (titleDe) botReplies.de[titleDe] = deHtml;
       }
     });
   } catch (err) {
@@ -38,7 +56,7 @@ console.log(json);
   }
 }
 
-// Convert Strapi content blocks to HTML
+// Convert Strapi content blocks (including links) to HTML
 function convertBlocksToHtml(blocks, image) {
   let html = "";
 
@@ -46,9 +64,20 @@ function convertBlocksToHtml(blocks, image) {
     if (block.type === "paragraph") {
       html += "<p>";
       block.children.forEach(child => {
-        html += child.bold ? `<b>${child.text}</b>` : child.text;
+        if (child.type === "link") {
+          const linkText = child.children.map(ch => ch.text).join("");
+          html += `<a href="${child.url}" target="_blank">${linkText}</a>`;
+        } else {
+          html += child.bold ? `<b>${child.text}</b>` : child.text;
+        }
       });
       html += "</p>";
+    }
+
+    if (block.type === "heading") {
+      const level = block.level || 2;
+      const headingText = block.children.map(ch => ch.text).join("");
+      html += `<h${level}>${headingText}</h${level}>`;
     }
 
     if (block.type === "list" && block.children) {
@@ -56,7 +85,12 @@ function convertBlocksToHtml(blocks, image) {
       block.children.forEach(listItem => {
         html += "<li>";
         listItem.children.forEach(child => {
-          html += child.bold ? `<b>${child.text}</b>` : child.text;
+          if (child.type === "link") {
+            const linkText = child.children.map(ch => ch.text).join("");
+            html += `<a href="${child.url}" target="_blank">${linkText}</a>`;
+          } else {
+            html += child.bold ? `<b>${child.text}</b>` : child.text;
+          }
         });
         html += "</li>";
       });
@@ -73,6 +107,8 @@ function convertBlocksToHtml(blocks, image) {
 
   return html;
 }
+
+
 
 // Static translations stay as they are
 const promptTranslations = {

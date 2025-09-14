@@ -418,6 +418,12 @@ ul, ol {
 li {
     margin-bottom: 12px;
 }
+hr.team-item-divider {
+    padding-top: 24px;
+    border: none;
+    border-bottom: 1px solid var(--header-footer);
+    margin-bottom: 0 !important;
+}
 img.team-member-img {
     width: 29%;
     display: block;
