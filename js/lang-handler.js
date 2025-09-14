@@ -33,23 +33,28 @@ async function loadBotReplies() {
       }
 
       // Եթե չունի content_us/content_de, բայց ունի team_member
-      if (item.team_member?.length) {
-        let enHtml = "";
-        let deHtml = "";
+    if (item.team_member?.length) {
+  let enHtml = "";
+  let deHtml = "";
 
-        item.team_member.forEach(member => {
-          // Վերցնենք member.img-ը որպես image, նշենք, որ սա team member է
-          if (member.content_en) {
-            enHtml += convertBlocksToHtml(member.content_en, member.img, true);
-          }
-          if (member.content_de) {
-            deHtml += convertBlocksToHtml(member.content_de, member.img, true);
-          }
-        });
+  for (let i = 0; i < item.team_member.length; i++) {
+    const member = item.team_member[i];
+    const isLast = i === item.team_member.length - 1;
 
-        if (titleEn) botReplies.en[titleEn] = enHtml;
-        if (titleDe) botReplies.de[titleDe] = deHtml;
-      }
+    if (member.content_en) {
+      enHtml += convertBlocksToHtml(member.content_en, member.img, true);
+      if (!isLast && member.img?.url) enHtml += "<hr>";
+    }
+    if (member.content_de) {
+      deHtml += convertBlocksToHtml(member.content_de, member.img, true);
+      if (!isLast && member.img?.url) deHtml += "<hr>";
+    }
+  }
+
+  if (titleEn) botReplies.en[titleEn] = enHtml;
+  if (titleDe) botReplies.de[titleDe] = deHtml;
+}
+
     });
   } catch (err) {
     console.error("Error loading bot replies from Strapi:", err);
