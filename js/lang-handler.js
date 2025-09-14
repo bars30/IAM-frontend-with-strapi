@@ -38,12 +38,12 @@ async function loadBotReplies() {
         let deHtml = "";
 
         item.team_member.forEach(member => {
-          // Վերցնենք member.img-ը որպես image
+          // Վերցնենք member.img-ը որպես image, նշենք, որ սա team member է
           if (member.content_en) {
-            enHtml += convertBlocksToHtml(member.content_en, member.img);
+            enHtml += convertBlocksToHtml(member.content_en, member.img, true);
           }
           if (member.content_de) {
-            deHtml += convertBlocksToHtml(member.content_de, member.img);
+            deHtml += convertBlocksToHtml(member.content_de, member.img, true);
           }
         });
 
@@ -57,7 +57,8 @@ async function loadBotReplies() {
 }
 
 // Convert Strapi content blocks (including links) to HTML
-function convertBlocksToHtml(blocks, image) {
+// isTeamMemberImage -> եթե true, օգտագործենք team-member-img class
+function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
   let html = "";
 
   blocks.forEach(block => {
@@ -99,14 +100,16 @@ function convertBlocksToHtml(blocks, image) {
   });
 
   if (image?.url) {
+    const imgClass = isTeamMemberImage ? "team-member-img" : "section-img";
     html += `
-      <img src="${image.url}" class="section-img" alt="${image.alternativeText || ""}">
+      <img src="${image.url}" class="${imgClass}" alt="${image.alternativeText || ""}">
       <div class="space"></div>
     `;
   }
 
   return html;
 }
+
 
 
 
