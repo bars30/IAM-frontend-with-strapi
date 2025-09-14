@@ -33,7 +33,7 @@ async function loadBotReplies() {
       }
 
       // Եթե չունի content_us/content_de, բայց ունի team_member
-    if (item.team_member?.length) {
+if (item.team_member?.length) {
   let enHtml = "";
   let deHtml = "";
 
@@ -43,17 +43,18 @@ async function loadBotReplies() {
 
     if (member.content_en) {
       enHtml += convertBlocksToHtml(member.content_en, member.img, true);
-      if (!isLast && member.img?.url) enHtml += "<hr>";
+      if (!isLast && member.img?.url) enHtml += '<hr class="team-item-divider">';
     }
     if (member.content_de) {
       deHtml += convertBlocksToHtml(member.content_de, member.img, true);
-      if (!isLast && member.img?.url) deHtml += "<hr>";
+      if (!isLast && member.img?.url) deHtml += '<hr class="team-item-divider">';
     }
   }
 
   if (titleEn) botReplies.en[titleEn] = enHtml;
   if (titleDe) botReplies.de[titleDe] = deHtml;
 }
+
 
     });
   } catch (err) {
