@@ -133,11 +133,46 @@ function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
 
 
 // UI text updater (մնում է import uiTexts-երից)
-import { uiTexts as enTexts } from "../lang/ui-texts.en.js";
-import { uiTexts as deTexts } from "../lang/ui-texts.de.js";
+let uiTexts = { en: null, de: null };
+
+async function loadUITexts(locale) {
+  try {
+    const res = await fetch(`http://localhost:1337/api/ui?locale=${locale}`);
+    const json = await res.json();
+
+    if (!json) return;
+
+    const data = json.data || json; // երբեմն Strapi վերադարձնում է json.data, երբեմն ուղղակի json
+    uiTexts[locale] = {
+      siteTitle: data.siteTitle,
+      siteSubtitle: data.siteSubtitle,
+      greetingHeader: `${data.greeting_header_part1} <span>${data.greeting_header_highlight}</span> ${data.greeting_header_part2}`,
+      greetingSub: data.greetingSub,
+      placeholder: data.placeholder,
+      buttons: {
+        clear: data.clear_button,
+        classic: data.classic_button,
+        questions: data.questions_button
+      },
+      footer: {
+        copyright: data.copyright,
+        imprint: "Imprint",   // 👉 եթե ուզում ես էլի պահել Strapi-ում, ավելացրու դաշտեր
+        privacy: "Data Protection"
+      }
+    };
+
+    console.log(`Loaded UI texts for ${locale}:`, uiTexts[locale]);
+  } catch (err) {
+    console.error(`Error loading UI texts for ${locale}:`, err);
+  }
+}
 
 function updateUIText() {
-  const texts = currentLang === "de" ? deTexts : enTexts;
+  const texts = currentLang === "de" ? uiTexts.de : uiTexts.en;
+  if (!texts) {
+    console.warn("UI texts not loaded yet for", currentLang);
+    return;
+  }
 
   document.title = texts.siteTitle;
   document.querySelector(".logo-header-title").textContent = texts.siteTitle;
@@ -159,6 +194,7 @@ function updateUIText() {
     footerBtns[1].textContent = texts.footer.privacy;
   }
 
+  // 👇 մնացած մասը նույնն է, կապված menuButtons-ի թարգմանությունների հետ
   const menuButtons = document.querySelectorAll(".quick-prompts-btn");
   menuButtons.forEach((btn) => {
     const currentText = btn.textContent.trim();
@@ -180,12 +216,18 @@ function updateUIText() {
   });
 }
 
+
 // Get bot reply (from dynamic Strapi data)
 function getBotReply(prompt) {
   const lang = currentLang === "de" ? "de" : "en";
   return botReplies[lang][prompt] || "<p>Reply not found.</p>";
 }
-loadBotReplies();
+(async () => {
+  await loadBotReplies();
+  await Promise.all([loadUITexts("en"), loadUITexts("de")]);
+  updateUIText();
+})();
+
 export {
   updateUIText,
   getBotReply,
