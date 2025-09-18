@@ -18,6 +18,7 @@ console.log(
       
       
       const selectedPrompt = btn.textContent;
+console.log(promptButtons, "🍺🍺🍺🍺🍺🍺");
 
       // Disable բոլոր prompt-buttons
       promptButtons.forEach(b => b.disabled = true);
@@ -74,6 +75,7 @@ console.log(
         // Bot types message
         typeTextHTML(botP, getBotReply(selectedPrompt), delay, () => {
           // Enable AFTER bot finishes typing
+          promptButtons.forEach(b => b.disabled = false);
           questionsBtn.disabled = false;
           sendBtn.disabled = false;
           langButtons.forEach(b => b.disabled = false);
