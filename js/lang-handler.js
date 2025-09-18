@@ -26,19 +26,19 @@ async function loadPrompts() {
     mainContainer.innerHTML = "";   // մաքրում ենք նախնական buttons
     footerContainer.innerHTML = "";
 
-    data.data.forEach(item => {
-      const btn = document.createElement("div");
-      btn.className = "quick-prompts-btn";
-      btn.textContent = item.title_en;  // կամ օգտագործել հոսող լեզուն
-      btn.dataset.prompt = item.title_en;
+  data.data.forEach(item => {
+  const btnMain = document.createElement("div");
+  btnMain.className = "quick-prompts-btn";
+  btnMain.textContent = item.title_en;
+  btnMain.dataset.prompt = item.title_en;
+  mainContainer.appendChild(btnMain);
 
-      if (item.isFooterButton) {
-        footerContainer.appendChild(btn);
-      } else {
-        mainContainer.appendChild(btn);
-      }
-    });
-
+  const btnFooter = document.createElement("div");
+  btnFooter.className = "quick-prompts-btn";
+  btnFooter.textContent = item.title_en;
+  btnFooter.dataset.prompt = item.title_en;
+  footerContainer.appendChild(btnFooter);
+});
     // --- Հիմա սրանից հետո պետք է կրկին գրենք event listener-ները prompt-buttons-ներին
     setupPromptButtons(
       document.querySelector(".language-switcher"),
