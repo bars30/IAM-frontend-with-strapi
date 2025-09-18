@@ -29,6 +29,9 @@ export function setupPromptButtons(langSwitcher, footerBtn) {
         chatboxMessages.style.display = "flex";
         input.classList.add("shrink");
 
+        setTimeout(() => {
+          questionsBtn.classList.add("visible");
+        }, 200);
         // User message
         const userMsg = document.createElement("div");
         userMsg.className = "message user-message";
