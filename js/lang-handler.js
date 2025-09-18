@@ -1,5 +1,7 @@
 let currentLang = localStorage.getItem("lang") || "en";
 let botReplies = { en: {}, de: {} };
+let promptTranslations = {};
+let reversePromptTranslations = {};
 
 // Lang setters
 function setCurrentLang(lang) {
@@ -20,11 +22,15 @@ async function loadBotReplies() {
 
     if (!json?.data) return;
 
+    // Սկսենք դատարկ օբյեկտներով
+    promptTranslations = {};
+    reversePromptTranslations = {};
+
     json.data.forEach(item => {
       const titleEn = item.title_en;
       const titleDe = item.title_de;
 
-      // Եթե սովորական բովանդակություն ունի
+      // --- Bot replies լցնել ---
       if (titleEn && item.content_us) {
         botReplies.en[titleEn] = convertBlocksToHtml(item.content_us, item.image);
       }
@@ -32,36 +38,43 @@ async function loadBotReplies() {
         botReplies.de[titleDe] = convertBlocksToHtml(item.content_de, item.image);
       }
 
-      // Եթե չունի content_us/content_de, բայց ունի team_member
-if (item.team_member?.length) {
-  let enHtml = "";
-  let deHtml = "";
+      // Team members (same as before)
+      if (item.team_member?.length) {
+        let enHtml = "";
+        let deHtml = "";
 
-  for (let i = 0; i < item.team_member.length; i++) {
-    const member = item.team_member[i];
-    const isLast = i === item.team_member.length - 1;
+        for (let i = 0; i < item.team_member.length; i++) {
+          const member = item.team_member[i];
+          const isLast = i === item.team_member.length - 1;
 
-    if (member.content_en) {
-      enHtml += convertBlocksToHtml(member.content_en, member.img, true);
-      if (!isLast && member.img?.url) enHtml += '<hr class="team-item-divider">';
-    }
-    if (member.content_de) {
-      deHtml += convertBlocksToHtml(member.content_de, member.img, true);
-      if (!isLast && member.img?.url) deHtml += '<hr class="team-item-divider">';
-    }
-  }
+          if (member.content_en) {
+            enHtml += convertBlocksToHtml(member.content_en, member.img, true);
+            if (!isLast && member.img?.url) enHtml += '<hr class="team-item-divider">';
+          }
+          if (member.content_de) {
+            deHtml += convertBlocksToHtml(member.content_de, member.img, true);
+            if (!isLast && member.img?.url) deHtml += '<hr class="team-item-divider">';
+          }
+        }
 
-  if (titleEn) botReplies.en[titleEn] = enHtml;
-  if (titleDe) botReplies.de[titleDe] = deHtml;
-}
+        if (titleEn) botReplies.en[titleEn] = enHtml;
+        if (titleDe) botReplies.de[titleDe] = deHtml;
+      }
 
-
+      // --- Այստեղ արդեն լցնում ենք թարգմանությունների mapping ---
+      if (titleEn && titleDe) {
+        promptTranslations[titleEn] = titleDe;
+        reversePromptTranslations[titleDe] = titleEn;
+      }
     });
+
+    console.log("Prompt translations:", promptTranslations);
+    console.log("Reverse translations:", reversePromptTranslations);
+
   } catch (err) {
     console.error("Error loading bot replies from Strapi:", err);
   }
 }
-
 // Convert Strapi content blocks (including links) to HTML
 // isTeamMemberImage -> եթե true, օգտագործենք team-member-img class
 function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
@@ -118,25 +131,6 @@ function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
 
 
 
-
-// Static translations stay as they are
-const promptTranslations = {
-  "Why Companies Choose Us": "Warum Unternehmen uns wählen",
-  "Services for Clients": "Dienstleistungen für Kunden",
-  "Hiring Process": "Einstellungsprozess",
-  "Technological Expertise & Roles": "Technologisches Fachwissen",
-  "IAM Talent Network": "IAM Talent-Netzwerk",
-  "Story & Purpose": "Geschichte & Zweck",
-  "Team": "Team",
-  "For IAM Professionals": "Für IAM-Profis",
-  "Contact": "Kontakt",
-  "Career Consultation": "Karriereberatung",
-  "Send Us Your CV": "Senden Sie uns Ihren Lebenslauf"
-};
-
-const reversePromptTranslations = Object.fromEntries(
-  Object.entries(promptTranslations).map(([en, de]) => [de, en])
-);
 
 // UI text updater (մնում է import uiTexts-երից)
 import { uiTexts as enTexts } from "../lang/ui-texts.en.js";
