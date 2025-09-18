@@ -54,17 +54,40 @@ async function loadPrompts() {
 // Fetch bot replies from Strapi
 async function loadBotReplies() {
   try {
-    const res = await fetch("http://localhost:1337/api/bot-replies?populate=team_member.img");
+    const res = await fetch("http://localhost:1337/api/bot-replies?populate=*");
     const json = await res.json();
-    console.log(json);
+    console.log(json, "🍺?populate=*");
+
+    const res2 = await fetch("http://localhost:1337/api/bot-replies?filters[team_member][$notNull]=true&populate=team_member.img");
+    const json2 = await res2.json();
+    console.log(json2, "🍺?filters[team_member][$notNull]=true&populate=team_member.img");
 
     if (!json?.data) return;
+
+    // ---- Մերժում (merge) երկու արդյունքները ըստ documentId ----
+const teamMap = {};
+json2.data.forEach(item => {
+  teamMap[item.documentId] = item.team_member; // team_member with images
+});
+
+const mergedData = json.data.map(item => {
+  if (teamMap[item.documentId]) {
+    return {
+      ...item,
+      team_member: teamMap[item.documentId] // փոխարինում ենք team_member-ը լիարժեք տարբերակով
+    };
+  }
+  return item;
+});
+
+console.log(mergedData, "🍺 mergedData");
+
 
     // Սկսենք դատարկ օբյեկտներով
     promptTranslations = {};
     reversePromptTranslations = {};
 
-    json.data.forEach(item => {
+    mergedData.forEach(item => {
       const titleEn = item.title_en;
       const titleDe = item.title_de;
 

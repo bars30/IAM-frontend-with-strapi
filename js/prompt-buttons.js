@@ -8,9 +8,15 @@ const sendBtn = document.getElementById("sendBtn");
 
 export function setupPromptButtons(langSwitcher, footerBtn) {
   const promptButtons = document.querySelectorAll(".quick-prompts-btn");
+console.log(
+  promptButtons
+);
 
   promptButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
+      console.log("🔥🍺🔥");
+      
+      
       const selectedPrompt = btn.textContent;
 
       // Disable բոլոր prompt-buttons
@@ -47,9 +53,19 @@ export function setupPromptButtons(langSwitcher, footerBtn) {
         const botP = document.createElement("p");
         botMsg.appendChild(botP);
         chatboxMessages.appendChild(botMsg);
+        const element = document.querySelector('.new-bot-message');
+            if (element) {
+              console.log("kkk");
+              
+              element.classList.remove("new-bot-message");
+            } else {
+              console.log("kkk");
+              
+            }
         botMsg.classList.add("new-bot-message");
+        chatboxMessages.scrollTop = chatboxMessages.scrollHeight;
         saveChatHistory();
-
+ 
         let delay = 7;
         if (selectedPrompt == "Data Protection" || selectedPrompt == "Datenschutz") {
           delay = 0.11;

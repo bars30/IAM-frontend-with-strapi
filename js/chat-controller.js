@@ -15,6 +15,14 @@ export function setupChatController() {
 
 
   sendBtn.addEventListener("click", () => {
+    console.log("ddddddd");
+    const element = document.querySelector('.new-bot-message');
+            if (element) {
+              element.classList.remove("new-bot-message");
+            }
+
+    chatboxMessages.scrollTop = chatboxMessages.scrollHeight;
+    
     setTimeout(async () => {  
 
   console.log(pendingCVFile);
