@@ -2,6 +2,7 @@ let currentLang = localStorage.getItem("lang") || "en";
 let botReplies = { en: {}, de: {} };
 let promptTranslations = {};
 let reversePromptTranslations = {};
+import { setupPromptButtons } from "./prompt-buttons.js";
 
 // Lang setters
 function setCurrentLang(lang) {
@@ -10,6 +11,43 @@ function setCurrentLang(lang) {
 
 function getCurrentLang() {
   return currentLang;
+}
+
+async function loadPrompts() {
+  try {
+    const res = await fetch("http://localhost:1337/api/bot-replies?fields=title_en,title_de,isFooterButton");
+    const data = await res.json();
+
+    if (!data?.data) return;
+
+    const mainContainer = document.querySelector("#quick-prompts-top");
+    const footerContainer = document.querySelector(".quick-prompts-footer .quick-prompts-cont");
+
+    mainContainer.innerHTML = "";   // մաքրում ենք նախնական buttons
+    footerContainer.innerHTML = "";
+
+    data.data.forEach(item => {
+      const btn = document.createElement("div");
+      btn.className = "quick-prompts-btn";
+      btn.textContent = item.title_en;  // կամ օգտագործել հոսող լեզուն
+      btn.dataset.prompt = item.title_en;
+
+      if (item.isFooterButton) {
+        footerContainer.appendChild(btn);
+      } else {
+        mainContainer.appendChild(btn);
+      }
+    });
+
+    // --- Հիմա սրանից հետո պետք է կրկին գրենք event listener-ները prompt-buttons-ներին
+    setupPromptButtons(
+      document.querySelector(".language-switcher"),
+      document.querySelectorAll(".chatbox-footer-btn.clear-btn")
+    );
+
+  } catch (err) {
+    console.error("Error loading prompts:", err);
+  }
 }
 
 // Fetch bot replies from Strapi
@@ -225,6 +263,7 @@ function getBotReply(prompt) {
 (async () => {
   await loadBotReplies();
   await Promise.all([loadUITexts("en"), loadUITexts("de")]);
+  loadPrompts();
   updateUIText();
 })();
 

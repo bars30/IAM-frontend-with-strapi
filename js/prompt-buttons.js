@@ -3,29 +3,33 @@ import { chatboxMessages, promptsSection, input, questionsBtn, langButtons } fro
 import { saveChatHistory } from "./chat-history.js";
 import { typeTextHTML } from "./message-renderer.js";
 
-export function setupPromptButtons(langSwitcher, sendBtn, footerBtn) {
-  const promptButtons = document.querySelectorAll(".quick-prompts-btn");
+const clearBtn = document.getElementById("clearBtn");
+const sendBtn = document.getElementById("sendBtn");
 
-  let firstMessage = true;
+export function setupPromptButtons(langSwitcher, footerBtn) {
+  const promptButtons = document.querySelectorAll(".quick-prompts-btn");
 
   promptButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const selectedPrompt = btn.textContent;
-      
-      
+
+      // Disable բոլոր prompt-buttons
       promptButtons.forEach(b => b.disabled = true);
-      footerBtn[0].disabled = true;
-      footerBtn[1].disabled = true;
+
+      // Disable միայն Find out more, sendBtn և language buttons
+      questionsBtn.disabled = true;
+      sendBtn.disabled = true;
+      langButtons.forEach(b => b.disabled = true);
+      langSwitcher.classList.add("disabled");
+
       promptsSection.classList.add("fade-out");
- 
+
       setTimeout(() => {
         promptsSection.style.display = "none"; 
         chatboxMessages.style.display = "flex";
         input.classList.add("shrink");
-        setTimeout(() => {
-          questionsBtn.classList.add("visible");
-        }, 200);
 
+        // User message
         const userMsg = document.createElement("div");
         userMsg.className = "message user-message";
         const userP = document.createElement("p");
@@ -34,50 +38,37 @@ export function setupPromptButtons(langSwitcher, sendBtn, footerBtn) {
         chatboxMessages.appendChild(userMsg);
         saveChatHistory();
 
-        setTimeout(() => {
-          chatboxMessages.scrollTop = chatboxMessages.scrollHeight;
-        }, 50);
-
+        // Bot message
         const botMsg = document.createElement("div");
         botMsg.className = "message bot-message";
         const botP = document.createElement("p");
         botMsg.appendChild(botP);
         chatboxMessages.appendChild(botMsg);
-
-
-        const previous = document.querySelector('.new-bot-message');
-          if (previous) previous.classList.remove("new-bot-message");
         botMsg.classList.add("new-bot-message");
         saveChatHistory();
-
-        questionsBtn.disabled = true;
-        langButtons.forEach(b => b.disabled = true);
-        langSwitcher.classList.add("disabled");
-        sendBtn.disabled = true;
-        footerBtn[0].disabled = true;
-        footerBtn[1].disabled = true;
 
         let delay = 7;
         if (selectedPrompt == "Data Protection" || selectedPrompt == "Datenschutz") {
           delay = 0.11;
         }
 
+        // Bot types message
         typeTextHTML(botP, getBotReply(selectedPrompt), delay, () => {
+          // Enable AFTER bot finishes typing
           questionsBtn.disabled = false;
+          sendBtn.disabled = false;
           langButtons.forEach(b => b.disabled = false);
           langSwitcher.classList.remove("disabled");
-          sendBtn.disabled = false;
-          footerBtn[0].disabled = false;
-          footerBtn[1].disabled = false;
           saveChatHistory();
         });
       }, 400);
     });
   });
 
+  // Footer prompts hide
   const footerPromptButtons = document.querySelectorAll('.quick-prompts-footer .quick-prompts-btn');
   const footerPrompts = document.querySelector(".quick-prompts-footer");
- 
+
   footerPromptButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       footerPrompts.classList.remove("fade-in");
