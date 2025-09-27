@@ -491,6 +491,9 @@ article.team-member {
 .contact p:last-child {
     margin-top: 2px;
 }
+a.quick-prompts-btn {
+  text-decoration: none;
+} 
 .text p {
     font-size: var(--15px);
 }

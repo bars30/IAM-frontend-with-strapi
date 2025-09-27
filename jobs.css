@@ -1,0 +1,136 @@
+body {
+ background-color: #fcfdff;
+}
+header, .cont {
+ width: 85%;
+ margin: auto;
+}
+img#logo-light {
+    height: 45px;
+}
+header {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 15px 0;
+}
+nav a {
+ color: black;
+ text-decoration: none;
+ transition: all 0.2s ease-in;
+}
+nav a:hover {
+ color: var(--brand-blue);
+}
+nav {
+ gap: 24px;
+ display: flex;
+}
+p {
+ color: black;
+}
+h1 {
+    font-weight: 500;
+    color: #0087ff;
+    margin: auto;
+    width: fit-content;
+    padding-bottom: 16px;
+}
+.subtitle {
+ margin-bottom: 12px;
+}
+.cont.title-cont {
+    width: 55%;
+}
+input[type="text"] {
+    border: 1px solid #e1e5eb;
+    border-radius: 52px;
+    padding: 10px 44px 10px 16px;
+    width: 100%;
+    background-color: #fcfdff;
+}
+.search-bar img {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    right: 16px;
+}
+.search-bar {
+    display: flex;
+    align-items: center;
+    width: 55%;
+    margin: auto;
+    position: relative;
+}
+
+input[type="text"]:focus {
+    border-color: #007bff; /* փոխում է եզրագիծը */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.4); /* ավելացնում է highlight էֆեկտ */
+    outline: none; /* հանում է բրաուզերի default outline-ը */
+}
+.job-item img {
+    width: 16px;
+}
+.job-item {
+    width: 25%;
+    padding: 16px;
+    background-color: white;
+    border: 1px solid #e1e5eb;
+    border-radius: 24px;
+}
+.job-cont {
+ padding-top: 32px;
+}
+h4.job-item_title {
+ font-weight: 500;
+ margin-bottom: 16px;
+}
+.job-item button {
+    background-color: #f0f0f047;
+    width: 100%;
+    padding: 8px;
+    border-radius: 50px;
+    margin-top: 16px;
+    font-weight: 600;
+    color: #007bff;
+    border: 1px solid #afb6bf38;
+    letter-spacing: 0.45px;
+    cursor: pointer;
+    transition: all 0.2s ease-in;
+}
+.job-item button:hover {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #ffffff82;
+}
+.job-item_location, .job-item_position {
+  position: relative;
+  padding-left: 24px; /* տեղ ազատում ենք icon-ի համար */
+}
+
+.job-item_location::before, .job-item_position::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%); /* կենտրոնացնում ենք ուղղահայաց */
+  width: 16px;
+  height: 16px;
+  background-image: url("./img/locat.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.job-item_position::before {
+ background-image: url("./img/position.png");
+}
+p.job-item_location {
+    margin-bottom: 6px;
+}
+
+
+
+
+
+
+
+

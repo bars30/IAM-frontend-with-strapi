@@ -37,6 +37,7 @@ const footerBtnCont = document.querySelector(".footer-btn-cont");
       btnMain.textContent = item.title_en;
       btnMain.dataset.prompt = item.title_en;
       mainContainer.appendChild(btnMain);
+    
 
       const btnFooter = document.createElement("div");
       btnFooter.className = "quick-prompts-btn";
@@ -52,6 +53,22 @@ const footerBtnCont = document.querySelector(".footer-btn-cont");
     
   
 });
+  const jobsLink = document.createElement("a");
+    jobsLink.href = "/jobs";              // կամ քո ուզած url-ը
+    jobsLink.className = "quick-prompts-btn";
+    jobsLink.textContent = "Jobs";
+    mainContainer.appendChild(jobsLink);
+    console.log(mainContainer, "🍺🍺🍺🍺🍺🍺");
+
+      const jobs2Link = document.createElement("a");
+    jobs2Link.href = "/jobs";              // կամ քո ուզած url-ը
+    jobs2Link.className = "quick-prompts-btn";
+    jobs2Link.textContent = "Jobs";
+    footerContainer.appendChild(jobs2Link);
+    console.log(footerContainer, "🍺🍺🍺🍺🍺🍺");
+// ✅ վերջում ավելացնում ենք "Jobs" a tag
+    
+    
     // --- Հիմա սրանից հետո պետք է կրկին գրենք event listener-ները prompt-buttons-ներին
     setupPromptButtons(
       document.querySelector(".language-switcher"),

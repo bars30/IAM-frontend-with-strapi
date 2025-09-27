@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Jobs</title>
+ <link rel="stylesheet" href="./style.css">
+ <link rel="stylesheet" href="./jobs.css">
+</head>
+<body>
+ <header>
+  <img src="./img/logo-full.svg" alt="logo" id="logo-light">
+  <nav>
+   <a href="#">Chat</a>
+   <a href="#">Jobs</a>
+  </nav>
+ </header>
+ <div class="cont title-cont">
+  <h1>Current Job Openings</h1>
+  <p class="subtitle">
+   We're excited to share our current job openings with you.
+    Use the search bar to filter positions by city, role, or technology. 
+    <br>
+    If you don't find the perfect match, send us your CV through our main
+     chat—our consultants will help identify opportunities that align with
+      your career goals.
+  </p>
+ </div>
+ <div class="search-bar">
+  <img id="search-icon" src="./img/search.png" alt="">
+  <input id="search-input" type="text" placeholder="Search by city, role, or technology...">
+</div>
+<div class="cont job-cont">
+ <div class="job-item">
+  <h4 class="job-item_title">Senior Recruiter – global Sourcing (m/w/d)</h4>
+  <p class="job-item_location">Hürth, Home office possible</p>
+  <p class="job-item_position">Full-time (Vollzeit), Part-time, Contract</p>
+  <button>View More</button>
+ </div>
+</div>
+
+ <script>
+  const input = document.getElementById("search-input");
+  const icon = document.getElementById("search-icon");
+
+  input.addEventListener("focus", () => {
+   console.log("focus");
+   
+    icon.src = "./img/search-selected.png";
+  });
+
+  input.addEventListener("blur", () => {
+    icon.src = "./img/search.png";
+  });
+</script>
+</body>
+</html>
