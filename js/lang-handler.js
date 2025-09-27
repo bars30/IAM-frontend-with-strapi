@@ -22,22 +22,35 @@ async function loadPrompts() {
 
     const mainContainer = document.querySelector("#quick-prompts-top");
     const footerContainer = document.querySelector(".quick-prompts-footer .quick-prompts-cont");
-
+const footerBtnCont = document.querySelector(".footer-btn-cont");
     mainContainer.innerHTML = "";   // մաքրում ենք նախնական buttons
     footerContainer.innerHTML = "";
 
   data.data.forEach(item => {
-  const btnMain = document.createElement("div");
-  btnMain.className = "quick-prompts-btn";
-  btnMain.textContent = item.title_en;
-  btnMain.dataset.prompt = item.title_en;
-  mainContainer.appendChild(btnMain);
+    console.log("😶‍🌫️😶‍🌫️", item);
+    console.log(!item.isFooterButton);
+    
+    if (!item.isFooterButton) {
+      console.log("yag");
+      const btnMain = document.createElement("div");
+      btnMain.className = "quick-prompts-btn";
+      btnMain.textContent = item.title_en;
+      btnMain.dataset.prompt = item.title_en;
+      mainContainer.appendChild(btnMain);
 
-  const btnFooter = document.createElement("div");
-  btnFooter.className = "quick-prompts-btn";
-  btnFooter.textContent = item.title_en;
-  btnFooter.dataset.prompt = item.title_en;
-  footerContainer.appendChild(btnFooter);
+      const btnFooter = document.createElement("div");
+      btnFooter.className = "quick-prompts-btn";
+      btnFooter.textContent = item.title_en;
+      btnFooter.dataset.prompt = item.title_en;
+      footerContainer.appendChild(btnFooter);
+    } else {
+        const footerContBtn= document.createElement("button");
+            footerContBtn.className = "footer-btn quick-prompts-btn";
+            footerContBtn.textContent = item.title_en;
+            footerBtnCont.appendChild(footerContBtn);
+    }
+    
+  
 });
     // --- Հիմա սրանից հետո պետք է կրկին գրենք event listener-ները prompt-buttons-ներին
     setupPromptButtons(

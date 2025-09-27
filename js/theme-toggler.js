@@ -18,13 +18,15 @@ export function setupThemeToggle() {
     root.style.setProperty('--text-dark', '#ffffff');
     root.style.setProperty('--header-footer', '#333942');
     root.style.setProperty('--button-shadow', '#6c788d');
+    root.style.setProperty('--border-color', '#ffffff0d');
+
 
     logoLight.style.display = "none";
     logoDark.style.display = "inline";
   }
 
   function applyLightTheme() {
-    root.style.setProperty('--bg-page', '#F2F7FD');
+    root.style.setProperty('--bg-page', '#fcfdff');
     root.style.setProperty('--bg-chatbox', '#ffffffff');
     root.style.setProperty('--bg-language-switch', '#F9F9F9');
     root.style.setProperty('--prompt-bg', '#FDFEFF');
@@ -35,6 +37,7 @@ export function setupThemeToggle() {
     root.style.setProperty('--text-dark', '#1a1a1a');
     root.style.setProperty('--header-footer', '#ffffff');
     root.style.setProperty('--button-shadow', '#c4cfe3');
+    root.style.setProperty('--border-color', '#edeef3db');
 
     logoLight.style.display = "inline";
     logoDark.style.display = "none";
