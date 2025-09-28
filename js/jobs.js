@@ -7,6 +7,7 @@ let currentIndex = 0;
 
 const container = document.getElementById("jobs-container");
 const searchInput = document.getElementById("search-input");
+const messageDiv = document.querySelector(".message");
 
 // Load jobs from API
 async function loadJobs() {
@@ -18,18 +19,24 @@ async function loadJobs() {
   renderJobs();
 }
 
-// Render jobs based on current index
+// Render jobs
 function renderJobs() {
   container.innerHTML = "";
+  messageDiv.innerHTML = ""; // clear previous messages
 
   const jobsToShow = filteredJobs.slice(0, currentIndex + JOBS_PER_PAGE);
+
+  // If no jobs at all
   if (jobsToShow.length === 0) {
-    container.innerHTML = `
-      <p>Sadly no openings match your current search criteria. Please try adjusting your search terms or send us your CV so we can help you discover other opportunities that fit your background.</p>
-    `;
+    const noMatchMsg = document.createElement("p");
+    noMatchMsg.classList.add("no-match-msg");
+    noMatchMsg.innerHTML =
+      "Sadly no openings match your current search criteria. <br> Please try adjusting your search terms or send us your CV so we can help you discover other opportunities that fit your background.";
+    messageDiv.appendChild(noMatchMsg);
     return;
   }
 
+  // Render jobs
   jobsToShow.forEach(job => {
     const jobDiv = document.createElement("div");
     jobDiv.classList.add("job-item");
@@ -47,7 +54,7 @@ function renderJobs() {
     container.appendChild(jobDiv);
   });
 
-  // Add "More Jobs" button if there are more jobs
+  // Add "More Jobs" button if available
   if (currentIndex + JOBS_PER_PAGE < filteredJobs.length) {
     const moreBtn = document.createElement("button");
     moreBtn.textContent = "More jobs";
@@ -66,15 +73,16 @@ function renderJobs() {
       renderJobs();
     };
     container.appendChild(moreBtn);
-  } else if (currentIndex + JOBS_PER_PAGE >= filteredJobs.length) {
+  } else {
+    // Show end of list message
     const endMsg = document.createElement("p");
-    endMsg.style.marginTop = "16px";
-    endMsg.textContent =
-      "This is the end of the list, there are no more openings that match your current search criteria. Please try adjusting your search terms or send us your CV so we can help you discover other opportunities that fit your background.";
-    container.appendChild(endMsg);
+    endMsg.classList.add("end-msg");
+    endMsg.innerHTML =
+      "This is the end of the list, there are no more openings that match your current search criteria. <br> Please try adjusting your search terms or send us your CV so we can help you discover other opportunities that fit your background.";
+    messageDiv.appendChild(endMsg);
   }
 
-  // Add event listeners for "View More" buttons
+  // Add event listeners for "View More"
   document.querySelectorAll(".view-more").forEach(btn => {
     btn.addEventListener("click", () => openJobModal(btn.dataset.doc));
   });
