@@ -14,9 +14,13 @@ async function loadJobs() {
     jobDiv.classList.add("job-item");
 
     jobDiv.innerHTML = `
-      <h4 class="job-item_title">${attrs.title}</h4>
-      <p class="job-item_location">${attrs.location}</p>
-      <p class="job-item_position">${attrs.position}</p>
+      <div>
+        <h4 class="job-item_title">${attrs.title}</h4>
+      <div>
+        <p class="job-item_location">${attrs.location}</p>
+        <p class="job-item_position">${attrs.position}</p>
+      </div>
+      </div>
       <button class="view-more" data-doc="${job.documentId}">View More</button>
     `;
 
@@ -46,8 +50,10 @@ async function openJobModal(documentId) {
 
   let html = `
     <h2>${job.title}</h2>
-    <p><strong>Location:</strong> ${job.location}</p>
-    <p><strong>Position:</strong> ${job.position}</p>
+    <div>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <p><strong>Position:</strong> ${job.position}</p>
+    </div>
     <hr>
     ${convertBlocksToHtml(job.content)}
   `;
