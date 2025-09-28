@@ -30,15 +30,23 @@
   <img id="search-icon" src="./img/search.png" alt="">
   <input id="search-input" type="text" placeholder="Search by city, role, or technology...">
 </div>
-<div class="cont job-cont">
- <div class="job-item">
+<div class="cont job-cont" id="jobs-container">
+ <!-- <div class="job-item">
   <h4 class="job-item_title">Senior Recruiter – global Sourcing (m/w/d)</h4>
   <p class="job-item_location">Hürth, Home office possible</p>
   <p class="job-item_position">Full-time (Vollzeit), Part-time, Contract</p>
   <button>View More</button>
- </div>
+ </div> -->
+</div>
+<div id="job-modal" class="modal hidden">
+  <div class="modal-content">
+    <span id="modal-close" class="modal-close">&times;</span>
+    <div id="modal-body"></div>
+  </div>
 </div>
 
+
+<script type="module" src="./js/jobs.js"></script>
  <script>
   const input = document.getElementById("search-input");
   const icon = document.getElementById("search-icon");

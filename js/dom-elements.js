@@ -29,4 +29,7 @@ export const root = document.documentElement;
 export const logoLight = document.getElementById("logo-light");
 export const logoDark = document.getElementById("logo-dark");
 
-toggle.checked = true;
+
+if (toggle) {
+  toggle.checked = true;
+}

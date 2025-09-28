@@ -23,9 +23,10 @@ async function loadPrompts() {
     const mainContainer = document.querySelector("#quick-prompts-top");
     const footerContainer = document.querySelector(".quick-prompts-footer .quick-prompts-cont");
 const footerBtnCont = document.querySelector(".footer-btn-cont");
-    mainContainer.innerHTML = "";   // մաքրում ենք նախնական buttons
-    footerContainer.innerHTML = "";
 
+if (mainContainer) mainContainer.innerHTML = "";
+if (footerContainer) footerContainer.innerHTML = "";
+if (footerBtnCont) footerBtnCont.innerHTML = "";
   data.data.forEach(item => {
     console.log("😶‍🌫️😶‍🌫️", item);
     console.log(!item.isFooterButton);
@@ -36,19 +37,28 @@ const footerBtnCont = document.querySelector(".footer-btn-cont");
       btnMain.className = "quick-prompts-btn";
       btnMain.textContent = item.title_en;
       btnMain.dataset.prompt = item.title_en;
-      mainContainer.appendChild(btnMain);
+    if (mainContainer) {
+  mainContainer.appendChild(btnMain);
+}
+
     
 
       const btnFooter = document.createElement("div");
       btnFooter.className = "quick-prompts-btn";
       btnFooter.textContent = item.title_en;
       btnFooter.dataset.prompt = item.title_en;
-      footerContainer.appendChild(btnFooter);
+      if (footerContainer) {
+  footerContainer.appendChild(btnFooter);
+}
+
     } else {
         const footerContBtn= document.createElement("button");
             footerContBtn.className = "footer-btn quick-prompts-btn";
             footerContBtn.textContent = item.title_en;
-            footerBtnCont.appendChild(footerContBtn);
+            if (footerBtnCont) {
+  footerBtnCont.appendChild(footerContBtn);
+}
+
     }
     
   
@@ -171,18 +181,41 @@ console.log(mergedData, "🍺 mergedData");
 function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
   let html = "";
 
+  function renderChildren(children) {
+    let content = "";
+    children.forEach(child => {
+      if (child.type === "link") {
+        const linkText = child.children.map(ch => ch.text).join("");
+        content += `<a href="${child.url}" target="_blank">${linkText}</a>`;
+      } else if (child.type === "text") {
+        content += child.bold ? `<b>${child.text}</b>` : child.text;
+      } else if (child.type === "list") {
+        // nested list
+        content += renderList(child);
+      }
+    });
+    return content;
+  }
+
+  function renderList(block) {
+    let listHtml = "<ul>";
+
+    block.children.forEach(child => {
+      if (child.type === "list-item") {
+        listHtml += "<li>" + renderChildren(child.children) + "</li>";
+      } else if (child.type === "list") {
+        // nested list as sibling of list-item
+        listHtml += renderList(child);
+      }
+    });
+
+    listHtml += "</ul>";
+    return listHtml;
+  }
+
   blocks.forEach(block => {
     if (block.type === "paragraph") {
-      html += "<p>";
-      block.children.forEach(child => {
-        if (child.type === "link") {
-          const linkText = child.children.map(ch => ch.text).join("");
-          html += `<a href="${child.url}" target="_blank">${linkText}</a>`;
-        } else {
-          html += child.bold ? `<b>${child.text}</b>` : child.text;
-        }
-      });
-      html += "</p>";
+      html += "<p>" + renderChildren(block.children) + "</p>";
     }
 
     if (block.type === "heading") {
@@ -191,21 +224,8 @@ function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
       html += `<h${level}>${headingText}</h${level}>`;
     }
 
-    if (block.type === "list" && block.children) {
-      html += "<ul>";
-      block.children.forEach(listItem => {
-        html += "<li>";
-        listItem.children.forEach(child => {
-          if (child.type === "link") {
-            const linkText = child.children.map(ch => ch.text).join("");
-            html += `<a href="${child.url}" target="_blank">${linkText}</a>`;
-          } else {
-            html += child.bold ? `<b>${child.text}</b>` : child.text;
-          }
-        });
-        html += "</li>";
-      });
-      html += "</ul>";
+    if (block.type === "list") {
+      html += renderList(block);
     }
   });
 
@@ -219,6 +239,7 @@ function convertBlocksToHtml(blocks, image, isTeamMemberImage = false) {
 
   return html;
 }
+
 
 
 
@@ -266,33 +287,47 @@ function updateUIText() {
   }
 
   document.title = texts.siteTitle;
-  document.querySelector(".logo-header-title").textContent = texts.siteTitle;
-  document.querySelector(".logo-header-subtitle").textContent = texts.siteSubtitle;
-  document.querySelector(".quick-prompts-header").innerHTML = texts.greetingHeader;
-  document.querySelector(".quick-prompts-subtitle").textContent = texts.greetingSub;
-  document.querySelector("#chatbox-input").placeholder = texts.placeholder;
+
+  const logoTitle = document.querySelector(".logo-header-title");
+  if (logoTitle) logoTitle.textContent = texts.siteTitle;
+
+  const logoSubtitle = document.querySelector(".logo-header-subtitle");
+  if (logoSubtitle) logoSubtitle.textContent = texts.siteSubtitle;
+
+  const quickHeader = document.querySelector(".quick-prompts-header");
+  if (quickHeader) quickHeader.innerHTML = texts.greetingHeader;
+
+  const quickSub = document.querySelector(".quick-prompts-subtitle");
+  if (quickSub) quickSub.textContent = texts.greetingSub;
+
+  const chatInput = document.querySelector("#chatbox-input");
+  if (chatInput) chatInput.placeholder = texts.placeholder;
 
   document.querySelectorAll(".clear-btn").forEach(btn => {
-    btn.textContent = texts.buttons.clear;
+    btn.textContent = texts.buttons?.clear || "";
   });
 
-  document.querySelector(".chatbox-footer-btn-questions").textContent = texts.buttons.questions;
-  document.querySelector("footer p").textContent = texts.footer.copyright;
+  const questionsBtn = document.querySelector(".chatbox-footer-btn-questions");
+  if (questionsBtn) questionsBtn.textContent = texts.buttons?.questions || "";
+
+  const footerText = document.querySelector("footer p");
+  if (footerText) footerText.textContent = texts.footer?.copyright || "";
 
   const footerBtns = document.querySelectorAll(".footer-btn-cont button");
   if (footerBtns.length >= 2) {
-    footerBtns[0].textContent = texts.footer.imprint;
-    footerBtns[1].textContent = texts.footer.privacy;
+    footerBtns[0].textContent = texts.footer?.imprint || "";
+    footerBtns[1].textContent = texts.footer?.privacy || "";
   }
 
-  // 👇 մնացած մասը նույնն է, կապված menuButtons-ի թարգմանությունների հետ
   const menuButtons = document.querySelectorAll(".quick-prompts-btn");
   menuButtons.forEach((btn) => {
     const currentText = btn.textContent.trim();
 
     const prompt =
       currentLang === "de"
-        ? Object.keys(promptTranslations).find(key => promptTranslations[key] === currentText) || currentText
+        ? Object.keys(promptTranslations).find(
+            key => promptTranslations[key] === currentText
+          ) || currentText
         : reversePromptTranslations[currentText] || currentText;
 
     btn.dataset.prompt = prompt;
@@ -308,18 +343,13 @@ function updateUIText() {
 }
 
 
-// Get bot reply (from dynamic Strapi data)
+
+// lang-handler.js
+
 function getBotReply(prompt) {
   const lang = currentLang === "de" ? "de" : "en";
   return botReplies[lang][prompt] || "<p>Reply not found.</p>";
 }
-(async () => {
-  await loadBotReplies();
-  await Promise.all([loadUITexts("en"), loadUITexts("de")]);
-  loadPrompts();
-  updateUIText();
-})();
-
 export {
   updateUIText,
   getBotReply,
@@ -327,5 +357,8 @@ export {
   setCurrentLang,
   promptTranslations,
   reversePromptTranslations,
-  loadBotReplies
+  loadBotReplies,
+  loadPrompts,          // 👈 սա ավելացրու
+  convertBlocksToHtml,
+  loadUITexts
 };

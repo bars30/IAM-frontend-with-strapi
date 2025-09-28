@@ -9,7 +9,7 @@ import { setupLangButtonListeners } from "./lang-button-listeners.js";
 import { setupQuickPromptsToggle } from "./quick-prompts-toggle.js";
 import { setupTextareaAutosize } from './input-autoresize.js';
 import { setupClearChatButtons } from './clear-chat.js';
-
+import { loadBotReplies, loadUITexts, loadPrompts, updateUIText } from "./lang-handler.js";
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -27,5 +27,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const sendBtn = document.querySelector(".chatbox-send-btn");
   setupPromptButtons(langSwitcher, sendBtn, footerBtn);
   setupClearChatButtons();
-
+(async () => {
+  await loadBotReplies();
+  await Promise.all([loadUITexts("en"), loadUITexts("de")]);
+  loadPrompts();
+  updateUIText();
+})();
 });
