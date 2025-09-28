@@ -3,7 +3,7 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Jobs</title>
+ <title>Current Job Openings</title>
  <link rel="stylesheet" href="./style.css">
  <link rel="stylesheet" href="./jobs.css">
 </head>
@@ -40,10 +40,15 @@
 </div>
 <div id="job-modal" class="modal hidden">
   <div class="modal-content">
-    <span id="modal-close" class="modal-close">&times;</span>
-    <div id="modal-body"></div>
+    <div class="modal-close-cont">
+      <span id="modal-close" class="modal-close">&times;</span>
+    </div>
+    <div class="modal-body-wrapper">
+      <div id="modal-body"></div>
+    </div>
   </div>
 </div>
+
 
 
 <script type="module" src="./js/jobs.js"></script>

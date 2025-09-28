@@ -46,8 +46,8 @@ async function openJobModal(documentId) {
 
   let html = `
     <h2>${job.title}</h2>
-    <p><strong>📍 Location:</strong> ${job.location}</p>
-    <p><strong>💼 Position:</strong> ${job.position}</p>
+    <p><strong>Location:</strong> ${job.location}</p>
+    <p><strong>Position:</strong> ${job.position}</p>
     <hr>
     ${convertBlocksToHtml(job.content)}
   `;
